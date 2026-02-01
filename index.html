@@ -1,0 +1,150 @@
+<style>
+.map-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.map-wrap img {
+  width: 100%;
+  display: block;
+  border-radius: 14px;
+}
+
+/* MAIN MOVING PIN */
+.pin {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: gold;
+  border-radius: 50%;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 rgba(255,215,0,.6);
+  animation: pulse 2.5s infinite;
+  z-index: 10;
+}
+
+/* TOOLTIP */
+.tooltip {
+  position: absolute;
+  background: #000;
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  width: 200px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all .6s cubic-bezier(.4,0,.2,1);
+  z-index: 10;
+}
+
+.tooltip h4 {
+  margin: 0 0 6px;
+  color: gold;
+  font-size: 15px;
+}
+
+/* STATIC PULSE POINTS */
+.pulse-point {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: gold;
+  border-radius: 50%;
+  box-shadow: 0 0 0 rgba(255,215,0,.6);
+  animation: pulse 2.5s infinite;
+  opacity: 0.7;
+}
+
+/* PULSE ANIMATION */
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(255,215,0,.6); }
+  70% { box-shadow: 0 0 0 14px rgba(255,215,0,0); }
+  100% { box-shadow: 0 0 0 0 rgba(255,215,0,0); }
+}
+</style>
+
+<div class="map-wrap">
+  <img src="svgexport-17-1.svg">
+
+  <!-- MAIN MOVING PIN -->
+  <div id="pin" class="pin"></div>
+
+  <!-- TOOLTIP -->
+  <div id="tip" class="tooltip">
+    <h4 id="city"></h4>
+    <span id="desc"></span>
+  </div>
+
+  <!-- STATIC PULSE POINTS -->
+  <!-- Top Left -->
+  <div class="pulse-point" style="top:10%; left:10%;"></div>
+  <div class="pulse-point" style="top:15%; left:20%;"></div>
+  <div class="pulse-point" style="top:5%; left:25%;"></div>
+
+  <!-- Top Right -->
+  <div class="pulse-point" style="top:12%; left:80%;"></div>
+  <div class="pulse-point" style="top:20%; left:75%;"></div>
+  <div class="pulse-point" style="top:8%; left:85%;"></div>
+
+  <!-- Bottom Left -->
+  <div class="pulse-point" style="top:80%; left:10%;"></div>
+  <div class="pulse-point" style="top:85%; left:15%;"></div>
+  <div class="pulse-point" style="top:75%; left:20%;"></div>
+
+  <!-- Bottom Right -->
+  <div class="pulse-point" style="top:78%; left:80%;"></div>
+  <div class="pulse-point" style="top:82%; left:75%;"></div>
+  <div class="pulse-point" style="top:85%; left:85%;"></div>
+
+  <!-- Center Extra -->
+  <div class="pulse-point" style="top:50%; left:50%;"></div>
+  <div class="pulse-point" style="top:55%; left:55%;"></div>
+  <div class="pulse-point" style="top:48%; left:60%;"></div>
+  <div class="pulse-point" style="top:52%; left:45%;"></div>
+  <div class="pulse-point" style="top:47%; left:40%;"></div>
+</div>
+
+<script>
+// AUTO MOVING PIN LOCATIONS
+const locations = [
+  { name: "Paris", x: 47, y: 38, text: "Luxury Concierge Services" },
+  { name: "Dubai", x: 62, y: 52, text: "Elite Lifestyle & Travel" },
+  { name: "Marrakech", x: 45, y: 55, text: "Private Cultural Experiences" }
+];
+
+let i = 0;
+const pin = document.getElementById("pin");
+const tip = document.getElementById("tip");
+
+function animateLocation() {
+  // hide pin & tooltip first
+  pin.style.opacity = 0;
+  tip.style.opacity = 0;
+  tip.style.transform = "translateY(10px)";
+
+  setTimeout(() => {
+    const loc = locations[i];
+
+    pin.style.left = loc.x + "%";
+    pin.style.top = loc.y + "%";
+
+    tip.style.left = `calc(${loc.x}% + 22px)`;
+    tip.style.top = `calc(${loc.y}% - 60px)`;
+
+    document.getElementById("city").innerText = loc.name;
+    document.getElementById("desc").innerText = loc.text;
+
+    pin.style.opacity = 1;
+    tip.style.opacity = 1;
+    tip.style.transform = "translateY(0)";
+
+    i = (i + 1) % locations.length;
+  }, 600);
+}
+
+// start animation
+animateLocation();
+setInterval(animateLocation, 4200);
+</script>
